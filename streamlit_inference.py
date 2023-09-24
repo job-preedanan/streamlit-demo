@@ -74,7 +74,8 @@ def main():
     image = st.sidebar.file_uploader('Upload an image', type=['jpg', 'jpeg', 'png'])
     # image_size = st.sidebar.slider('Image Size', 32, 512, 224)
     image_size = 518
-    model_path = st.sidebar.file_uploader('Upload the model file (PyTorch .pt)', type=['pt'])
+    # model_path = st.sidebar.file_uploader('Upload the model file (PyTorch .pt)', type=['pt'])
+    model_path = 'DINOb(f)_4cls_518_0_best.pt'
     multi_label = st.sidebar.checkbox('Multi-label Classification')
 
     if image is not None and model_path is not None:
