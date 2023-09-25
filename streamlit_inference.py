@@ -6,10 +6,17 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 from DINOv2 import DinoVisionTransformerClassifier as dino_classifier
+import gdown
+
 
 # Define the class names
 class_names = ['Normal', 'APP', 'EP', 'Irrelevant']
 device = "cpu"
+
+
+@st.cache_resource()
+def download_weights(url):
+    gdown.download(url, "DINOb_518_best.pt", quiet=False)
 
 
 # @st.cache_re(allow_output_mutation=True)
@@ -75,7 +82,9 @@ def main():
     # image_size = st.sidebar.slider('Image Size', 32, 512, 224)
     image_size = 518
     # model_path = st.sidebar.file_uploader('Upload the model file (PyTorch .pt)', type=['pt'])
-    model_path = 'DINOb(f)_4cls_518_0_best.pt'
+    model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw'
+    download_weights(model_url)
+    model_path = 'DINOb_518_best.pt'
     multi_label = st.sidebar.checkbox('Multi-label Classification')
 
     if image is not None and model_path is not None:
