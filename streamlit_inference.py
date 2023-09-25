@@ -74,7 +74,7 @@ def classify_image(image, model, image_size, multi_label=False):
 
 
 def main():
-    st.title('Swine Diseases Classification')
+    st.title('Swine Diseases Classification Demo')
 
     # Create sidebar for user input
     st.sidebar.header('User Input')
@@ -85,7 +85,7 @@ def main():
     model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw'
     download_weights(model_url)
     model_path = 'DINOb_518_best.pt'
-    multi_label = st.sidebar.checkbox('Multi-label Classification')
+    multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
 
     if image is not None and model_path is not None:
         model = load_model(model_path)
@@ -103,7 +103,8 @@ def main():
                 if predicted_classes[i] == 1:
                     result_list.append(class_names[i])
 
-            st.header('Result: : ' + str(result_list))
+            result = '+'.join(result_list)
+            st.header('Result: : ' + str(result))
         else:
             st.header('Result: : ' + str(predicted_classes))
 
