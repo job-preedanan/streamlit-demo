@@ -8,7 +8,7 @@ class DinoVisionTransformerClassifier(nn.Module):
         super(DinoVisionTransformerClassifier, self).__init__()
         self.model_size = model_size
         self.embedding_size = 384 if model_size == 's' else 768
-        self.transformer = torch.hub.load('facebookresearch/dinov2', 'dinov2_vit' + self.model_size + '14')
+        self.transformer = torch.hub.load('facebookresearch/dinov2', 'dinov2_vit' + self.model_size + '14', pretrained=False)
         self.classifier = nn.Sequential(
             nn.Linear(self.embedding_size, 1024),
             nn.ReLU(),
