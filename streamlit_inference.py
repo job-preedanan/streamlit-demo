@@ -11,7 +11,7 @@ import gdown
 
 # Define the class names
 class_names = ['Normal', 'APP', 'EP', 'Irrelevant']
-device = "cpu"
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 @st.cache_resource()
@@ -20,10 +20,10 @@ def download_weights(url):
 
 
 # @st.cache_re(allow_output_mutation=True)
-@st.cache_data()
+@st.cache_resource()
 def load_model(model_path):
     model = dino_classifier(len(class_names), model_size='b').to(device)
-    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     # model = torch.load(model_path, map_location=torch.device('cpu'))  # Load the model (assuming it's a saved PyTorch model)
     model.eval()
     return model
@@ -40,6 +40,7 @@ def plot_probabilities(probabilities):
     ax.set_title('Class Probabilities')
 
     return fig
+
 
 def classify_image(image, model, image_size, multi_label=False):
     # Define the image preprocessing transformations
@@ -79,7 +80,6 @@ def main():
     # Create sidebar for user input
     st.sidebar.header('User Input')
     image = st.sidebar.file_uploader('Upload an image', type=['jpg', 'jpeg', 'png'])
-    # image_size = st.sidebar.slider('Image Size', 32, 512, 224)
     image_size = 518
     # model_path = st.sidebar.file_uploader('Upload the model file (PyTorch .pt)', type=['pt'])
     model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw'
@@ -93,6 +93,13 @@ def main():
 
         # Load and classify the uploaded image
         image = Image.open(image)
+
+        # Use st.beta_columns to create a layout
+        col1, col2 = st.columns([1, 1])
+
+        # Display the image in the first column
+        col1.image(image, caption='Uploaded Image', use_column_width=True)
+
         predicted_classes, probabilities = classify_image(image, model, image_size, multi_label)
         print(predicted_classes, probabilities)
 
@@ -107,12 +114,6 @@ def main():
             st.header('Result: : ' + str(result))
         else:
             st.header('Result: : ' + str(predicted_classes))
-
-        # Use st.beta_columns to create a layout
-        col1, col2 = st.columns([1, 1])
-
-        # Display the image in the first column
-        col1.image(image, caption='Uploaded Image', use_column_width=True)
 
         # Display the bar graph in the second column
         with col2:
