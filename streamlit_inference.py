@@ -29,6 +29,7 @@ def load_model(model_path):
     return model
 
 
+@st.cache_data
 def plot_probabilities(probabilities):
     fig, ax = plt.subplots()
     y_pos = np.arange(len(class_names))
@@ -42,6 +43,12 @@ def plot_probabilities(probabilities):
     return fig
 
 
+@st.cache_data
+def load_image(image):
+    return Image.open(image)
+
+
+@st.cache_data
 def classify_image(image, model, image_size, multi_label=False):
     # Define the image preprocessing transformations
     preprocess = transforms.Compose([
@@ -92,7 +99,8 @@ def main():
         # st.image(image, caption='Uploaded Image', use_column_width=True)
 
         # Load and classify the uploaded image
-        image = Image.open(image)
+        image = load_image(image)
+        # image = Image.open(image)
 
         # Use st.beta_columns to create a layout
         col1, col2 = st.columns([1, 1])
@@ -111,9 +119,9 @@ def main():
                     result_list.append(class_names[i])
 
             result = '+'.join(result_list)
-            st.header('Result: : ' + str(result))
+            st.header('Result :: ' + str(result))
         else:
-            st.header('Result: : ' + str(predicted_classes))
+            st.header('Result :: ' + str(predicted_classes))
 
         # Display the bar graph in the second column
         with col2:
