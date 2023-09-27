@@ -48,7 +48,7 @@ def load_image(image):
     return Image.open(image)
 
 
-@st.cache_resource
+@st.cache_data
 def classify_image(image, model, image_size, multi_label=False):
     # Define the image preprocessing transformations
     preprocess = transforms.Compose([
