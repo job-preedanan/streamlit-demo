@@ -87,11 +87,12 @@ def main():
     # Create sidebar for user input
     st.sidebar.header('User Input')
     image = st.sidebar.file_uploader('Upload an image', type=['jpg', 'jpeg', 'png'])
-    image_size = 518
+    image_size = 336
     # model_path = st.sidebar.file_uploader('Upload the model file (PyTorch .pt)', type=['pt'])
-    model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw'
+    # model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw' # old 518
+    model_url = 'https://drive.google.com/uc?export=download&id=16fLZFDg7_lrMdYV57GuzL78IWoAHpVKl'
     download_weights(model_url)
-    model_path = 'DINOb_518_best.pt'
+    model_path = 'DINOb(f)_4cls_336_1_best.pt'
     multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
 
     if image is not None and model_path is not None:
