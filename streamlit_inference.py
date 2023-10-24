@@ -16,7 +16,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 @st.cache_resource()
 def download_weights(url):
-    gdown.download(url, "DINOb_518_best.pt", quiet=False)
+    gdown.download(url, "DINOb(f)_4cls_336_1_best.pt", quiet=False)
 
 
 # @st.cache_re(allow_output_mutation=True)
