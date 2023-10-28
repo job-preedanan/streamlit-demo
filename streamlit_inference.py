@@ -30,7 +30,7 @@ def load_model(model_paths, class_num):
         model_path = model_paths[1]
         model = dino_classifier(len(class_names_4cls), model_size='b').to(device)
     print('model detail - ')
-    print(str(class_num), model_path))
+    print(str(class_num), model_path)
     model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     # model = torch.load(model_path, map_location=torch.device('cpu'))  # Load the model (assuming it's a saved PyTorch model)
     model.eval()
