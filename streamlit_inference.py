@@ -10,7 +10,8 @@ import gdown
 
 
 # Define the class names
-class_names = ['Normal', 'APP', 'EP', 'Irrelevant']
+class_names_4cls = ['Normal', 'APP', 'EP', 'Irrelevant']
+class_name_3cls = ['Normal', 'Diseases', 'Irrelevant']
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -21,8 +22,11 @@ def download_weights(url):
 
 # @st.cache_re(allow_output_mutation=True)
 @st.cache_resource()
-def load_model(model_path):
-    model = dino_classifier(len(class_names), model_size='b').to(device)
+def load_model(model_path, class_num):
+    if class_num == 3:
+        model = dino_classifier(len(class_name_3cls), model_size='b').to(device)
+    elif class_num == 4:
+        model = dino_classifier(len(class_names_4cls), model_size='b').to(device)
     model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     # model = torch.load(model_path, map_location=torch.device('cpu'))  # Load the model (assuming it's a saved PyTorch model)
     model.eval()
@@ -30,7 +34,12 @@ def load_model(model_path):
 
 
 @st.cache_data
-def plot_probabilities(probabilities):
+def plot_probabilities(probabilities, num_classes):
+    if num_classes == 3:
+        class_names = class_name_3cls
+    elif num_classes == 4:
+        class_names = class_names_4cls
+
     fig, ax = plt.subplots()
     y_pos = np.arange(len(class_names))
     ax.barh(y_pos, probabilities, align='center')
@@ -88,20 +97,29 @@ def main():
     st.sidebar.header('User Input')
     image = st.sidebar.file_uploader('Upload an image', type=['jpg', 'jpeg', 'png'])
     image_size = 336
+
+    # load models
     # model_path = st.sidebar.file_uploader('Upload the model file (PyTorch .pt)', type=['pt'])
     # model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw' # old 518
-    model_url = 'https://drive.google.com/uc?export=download&id=16fLZFDg7_lrMdYV57GuzL78IWoAHpVKl'
-    download_weights(model_url)
-    model_path = 'DINOb(f)_4cls_336_1_best.pt'
+    model_url_3cls = 'https://drive.google.com/uc?export=download&id=1EziGuV5YxMPE1_mJF4zmu3mnWQZgp1yM'
+    model_url_4cls = 'https://drive.google.com/uc?export=download&id=16fLZFDg7_lrMdYV57GuzL78IWoAHpVKl'   # 336 multi-label
+    download_weights(model_url_3cls)
+    download_weights(model_url_4cls)
+    model_path_3cls = 'DINOb(f)_4cls_336_0_best.pt'
+    model_path_4cls = 'DINOb(f)_4cls_336_1_best.pt'
+
+    # Add a checkbox to select the multi-label (possible multiple output) or multi-class (only the highest prob.)
     multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
 
+    # Add a slider to select the number of classes ()
+    num_classes = st.slider("Normal/Diseases or Normal/APP/EP", min_value=3, max_value=4)
+
     if image is not None and model_path is not None:
-        model = load_model(model_path)
+        model = load_model(model_path, num_classes)
         # st.image(image, caption='Uploaded Image', use_column_width=True)
 
         # Load and classify the uploaded image
         image = load_image(image)
-        # image = Image.open(image)
 
         # Use st.beta_columns to create a layout
         col1, col2 = st.columns([1, 1])
@@ -127,7 +145,7 @@ def main():
         # Display the bar graph in the second column
         with col2:
             st.write('Class Probabilities:')
-            barplot = plot_probabilities(probabilities)
+            barplot = plot_probabilities(probabilities, num_classes)
             st.pyplot(barplot)
 
 
