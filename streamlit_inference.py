@@ -101,6 +101,12 @@ def main():
     image = st.sidebar.file_uploader('Upload an image', type=['jpg', 'jpeg', 'png'])
     image_size = 336
 
+    # Add a checkbox to select the multi-label (possible multiple output) or multi-class (only the highest prob.)
+    multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
+
+    # Add a slider to select the number of classes ()
+    num_classes = st.sidebar.slider("Normal/Diseases or Normal/APP/EP", min_value=3, max_value=4)
+
     # load models
     # model_path = st.sidebar.file_uploader('Upload the model file (PyTorch .pt)', type=['pt'])
     # model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw' # old 518
@@ -108,16 +114,11 @@ def main():
     model_url_4cls = 'https://drive.google.com/uc?export=download&id=16fLZFDg7_lrMdYV57GuzL78IWoAHpVKl'   # 336 multi-label
     model_path_3cls = 'DINOb(f)_3cls_336_0_best.pt'
     model_path_4cls = 'DINOb(f)_4cls_336_1_best.pt'
-    download_weights(model_url_3cls, model_path_3cls)
-    download_weights(model_url_4cls, model_path_4cls)
+    if num_classes == 3:
+        download_weights(model_url_3cls, model_path_3cls)
+    elif num_classes==4:
+        download_weights(model_url_4cls, model_path_4cls)
     model_paths = [model_path_3cls, model_path_4cls]
-
-    # Add a checkbox to select the multi-label (possible multiple output) or multi-class (only the highest prob.)
-    multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
-
-    # Add a slider to select the number of classes ()
-    num_classes = st.sidebar.slider("Normal/Diseases or Normal/APP/EP", min_value=3, max_value=4)
-    print(num_classes)
 
     if image is not None and model_paths is not None:
         model = load_model(model_paths, num_classes)
