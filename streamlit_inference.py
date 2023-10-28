@@ -11,7 +11,7 @@ import gdown
 
 # Define the class names
 class_names_4cls = ['Normal', 'APP', 'EP', 'Irrelevant']
-class_name_3cls = ['Normal', 'Diseases', 'Irrelevant']
+class_names_3cls = ['Normal', 'Diseases', 'Irrelevant']
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -39,7 +39,7 @@ def load_model(model_paths, class_num):
 @st.cache_data
 def plot_probabilities(probabilities, num_classes):
     if num_classes == 3:
-        class_names = class_name_3cls
+        class_names = class_names_3cls
     elif num_classes == 4:
         class_names = class_names_4cls
 
