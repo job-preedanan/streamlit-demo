@@ -112,7 +112,7 @@ def main():
     multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
 
     # Add a slider to select the number of classes ()
-    num_classes = st.slider("Normal/Diseases or Normal/APP/EP", min_value=3, max_value=4)
+    num_classes = st.sidebar.slider("Normal/Diseases or Normal/APP/EP", min_value=3, max_value=4)
 
     if image is not None and model_path is not None:
         model = load_model(model_path, num_classes)
