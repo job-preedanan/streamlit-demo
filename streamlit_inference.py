@@ -16,8 +16,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 @st.cache_resource()
-def download_weights(url):
-    gdown.download(url, "DINOb(f)_4cls_336_1_best.pt", quiet=False)
+def download_weights(url, model_name):
+    gdown.download(url, model_name, quiet=False)
 
 
 # @st.cache_re(allow_output_mutation=True)
@@ -105,10 +105,10 @@ def main():
     # model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw' # old 518
     model_url_3cls = 'https://drive.google.com/uc?export=download&id=1EziGuV5YxMPE1_mJF4zmu3mnWQZgp1yM'
     model_url_4cls = 'https://drive.google.com/uc?export=download&id=16fLZFDg7_lrMdYV57GuzL78IWoAHpVKl'   # 336 multi-label
-    download_weights(model_url_3cls)
-    download_weights(model_url_4cls)
     model_path_3cls = 'DINOb(f)_3cls_336_0_best.pt'
     model_path_4cls = 'DINOb(f)_4cls_336_1_best.pt'
+    download_weights(model_url_3cls, model_path_3cls)
+    download_weights(model_url_4cls, model_path_4cls)
     model_paths = [model_path_3cls, model_path_4cls]
 
     # Add a checkbox to select the multi-label (possible multiple output) or multi-class (only the highest prob.)
