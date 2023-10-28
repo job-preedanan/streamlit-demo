@@ -22,10 +22,12 @@ def download_weights(url):
 
 # @st.cache_re(allow_output_mutation=True)
 @st.cache_resource()
-def load_model(model_path, class_num):
+def load_model(model_paths, class_num):
     if class_num == 3:
+        model_path = model_paths[0]
         model = dino_classifier(len(class_name_3cls), model_size='b').to(device)
     elif class_num == 4:
+        model_path = model_paths[1]
         model = dino_classifier(len(class_names_4cls), model_size='b').to(device)
     model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     # model = torch.load(model_path, map_location=torch.device('cpu'))  # Load the model (assuming it's a saved PyTorch model)
@@ -107,6 +109,7 @@ def main():
     download_weights(model_url_4cls)
     model_path_3cls = 'DINOb(f)_4cls_336_0_best.pt'
     model_path_4cls = 'DINOb(f)_4cls_336_1_best.pt'
+    model_paths = [model_path_3cls, model_path_4cls]
 
     # Add a checkbox to select the multi-label (possible multiple output) or multi-class (only the highest prob.)
     multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
@@ -114,8 +117,8 @@ def main():
     # Add a slider to select the number of classes ()
     num_classes = st.sidebar.slider("Normal/Diseases or Normal/APP/EP", min_value=3, max_value=4)
 
-    if image is not None and model_path is not None:
-        model = load_model(model_path, num_classes)
+    if image is not None and model_paths is not None:
+        model = load_model(model_paths, num_classes)
         # st.image(image, caption='Uploaded Image', use_column_width=True)
 
         # Load and classify the uploaded image
