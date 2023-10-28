@@ -41,25 +41,17 @@ def load_model(model_paths, class_num):
 def plot_probabilities(probabilities, num_classes):
     if num_classes == 3:
         class_names = class_names_3cls
-        fig, ax = plt.subplots()
-        y_pos = np.arange(len(class_names))
-        ax.barh(y_pos, probabilities, align='center')
-        ax.set_yticks(y_pos)
-        ax.set_yticklabels(class_names)
-        ax.invert_yaxis()
-        ax.set_xlabel('Probability')
-        ax.set_title('Class Probabilities')
     elif num_classes == 4:
         class_names = class_names_4cls
-        fig, ax = plt.subplots()
-        y_pos = np.arange(len(class_names))
-        ax.barh(y_pos, probabilities, align='center')
-        ax.set_yticks(y_pos)
-        ax.set_yticklabels(class_names)
-        ax.invert_yaxis()
-        ax.set_xlabel('Probability')
-        ax.set_title('Class Probabilities')
 
+    fig, ax = plt.subplots()
+    y_pos = np.arange(len(class_names))
+    ax.barh(y_pos, probabilities, align='center')
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(class_names)
+    ax.invert_yaxis()
+    ax.set_xlabel('Probability')
+    ax.set_title('Class Probabilities')
 
     return fig
 
@@ -111,7 +103,7 @@ def main():
     image_size = 336
 
     # Add a checkbox to select the multi-label (possible multiple output) or multi-class (only the highest prob.)
-    multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
+    # multi_label = st.sidebar.checkbox('Multi-output Classification', value=True)
 
     # Add a slider to select the number of classes ()
     num_classes = st.sidebar.slider("Normal/Diseases or Normal/APP/EP", min_value=3, max_value=4)
@@ -146,7 +138,8 @@ def main():
         predicted_classes, probabilities = classify_image(image, model, image_size, multi_label)
         print(predicted_classes, probabilities)
 
-        if multi_label:
+        # 4 classes classification (multi-label output)
+        if num_classes == 4:
             # Display the results
             result_list = []
             for i in range(len(class_names)):
@@ -155,7 +148,9 @@ def main():
 
             result = '+'.join(result_list)
             st.header('Result :: ' + str(result))
-        else:
+
+        # 3 classes classifcation (multi-class - single output)
+        elif num_classes == 3:
             st.header('Result :: ' + str(predicted_classes))
 
         # Display the bar graph in the second column
