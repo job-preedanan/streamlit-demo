@@ -89,7 +89,7 @@ def classify_image(image, model, image_size, num_classes=4):
 
         # Get the class index with the highest probability
         predicted_class_idx = torch.argmax(probabilities).item()
-        predicted_class = class_names[predicted_class_idx]        # 1 output
+        predicted_class = class_names_3cls[predicted_class_idx]        # 1 output
 
     return predicted_class, probabilities.tolist()
 
@@ -142,9 +142,9 @@ def main():
         if num_classes == 4:
             # Display the results
             result_list = []
-            for i in range(len(class_names)):
+            for i in range(len(class_names_4cls)):
                 if predicted_classes[i] == 1:
-                    result_list.append(class_names[i])
+                    result_list.append(class_names_4cls[i])
 
             result = '+'.join(result_list)
             st.header('Result :: ' + str(result))
