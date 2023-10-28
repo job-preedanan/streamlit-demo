@@ -62,7 +62,7 @@ def load_image(image):
 
 
 # @st.cache_data
-def classify_image(image, model, image_size, multi_label=False):
+def classify_image(image, model, image_size, num_classes=4):
     # Define the image preprocessing transformations
     preprocess = transforms.Compose([
         transforms.Resize((image_size, image_size)),  # Resize the image to the specified size
@@ -78,12 +78,12 @@ def classify_image(image, model, image_size, multi_label=False):
     with torch.no_grad():
         output = model(input_batch)
 
-    # If multi_label is True, use sigmoid to get probabilities
-    if multi_label:
+    # If multi_label is True, use sigmoid to get probabilities (class_num =4)
+    if num_classes == 4:
         # Get the predicted class probabilities
         probabilities = torch.sigmoid(output[0])
         predicted_class = (probabilities.data > 0.5).float()      # multi outputs
-    else:
+    elif num_classes == 3:
         # Get the predicted class probabilities
         probabilities = torch.nn.functional.softmax(output[0], dim=0)
 
@@ -135,7 +135,7 @@ def main():
         # Display the image in the first column
         col1.image(image, caption='Uploaded Image', use_column_width=True)
 
-        predicted_classes, probabilities = classify_image(image, model, image_size, multi_label)
+        predicted_classes, probabilities = classify_image(image, model, image_size, num_classes)
         print(predicted_classes, probabilities)
 
         # 4 classes classification (multi-label output)
