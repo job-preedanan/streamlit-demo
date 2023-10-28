@@ -41,17 +41,25 @@ def load_model(model_paths, class_num):
 def plot_probabilities(probabilities, num_classes):
     if num_classes == 3:
         class_names = class_names_3cls
+        fig, ax = plt.subplots()
+        y_pos = np.arange(len(class_names))
+        ax.barh(y_pos, probabilities, align='center')
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels(class_names)
+        ax.invert_yaxis()
+        ax.set_xlabel('Probability')
+        ax.set_title('Class Probabilities')
     elif num_classes == 4:
         class_names = class_names_4cls
+        fig, ax = plt.subplots()
+        y_pos = np.arange(len(class_names))
+        ax.barh(y_pos, probabilities, align='center')
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels(class_names)
+        ax.invert_yaxis()
+        ax.set_xlabel('Probability')
+        ax.set_title('Class Probabilities')
 
-    fig, ax = plt.subplots()
-    y_pos = np.arange(len(class_names))
-    ax.barh(y_pos, probabilities, align='center')
-    ax.set_yticks(y_pos)
-    ax.set_yticklabels(class_names)
-    ax.invert_yaxis()
-    ax.set_xlabel('Probability')
-    ax.set_title('Class Probabilities')
 
     return fig
 
