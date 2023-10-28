@@ -25,7 +25,7 @@ def download_weights(url, model_name):
 def load_model(model_paths, class_num):
     if class_num == 3:
         model_path = model_paths[0]
-        model = dino_classifier(len(class_name_3cls), model_size='b').to(device)
+        model = dino_classifier(len(class_names_3cls), model_size='b').to(device)
     elif class_num == 4:
         model_path = model_paths[1]
         model = dino_classifier(len(class_names_4cls), model_size='b').to(device)
