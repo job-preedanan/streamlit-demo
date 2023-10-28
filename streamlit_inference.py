@@ -29,6 +29,7 @@ def load_model(model_paths, class_num):
     elif class_num == 4:
         model_path = model_paths[1]
         model = dino_classifier(len(class_names_4cls), model_size='b').to(device)
+    print(model_path)
     model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     # model = torch.load(model_path, map_location=torch.device('cpu'))  # Load the model (assuming it's a saved PyTorch model)
     model.eval()
@@ -116,6 +117,7 @@ def main():
 
     # Add a slider to select the number of classes ()
     num_classes = st.sidebar.slider("Normal/Diseases or Normal/APP/EP", min_value=3, max_value=4)
+    print(num_classes)
 
     if image is not None and model_paths is not None:
         model = load_model(model_paths, num_classes)
