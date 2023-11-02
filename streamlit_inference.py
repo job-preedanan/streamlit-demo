@@ -97,9 +97,7 @@ def classify_image(image, model, image_size, num_classes=4):
         # Get the predicted class probabilities
         probabilities = torch.sigmoid(output[0])
         # predicted_class = (probabilities.data > 0.5).float()      # multi outputs
-        predicted = torch.zeros_like(probabilities)
-        for i in range(len(probabilities)):
-            predicted[i] = post_process(probabilities[i], 0.5)            # post processing
+        predicted_class = post_process(probabilities, 0.5)            # post processing
 
     elif num_classes == 3:
         # Get the predicted class probabilities
