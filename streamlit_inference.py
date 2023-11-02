@@ -58,7 +58,7 @@ def plot_probabilities(probabilities, num_classes):
 
 def post_process(outputs, th):
     if (outputs > 0.5).sum() == 0:
-        predicted = torch.zeros_like(a)
+        predicted = torch.zeros_like(outputs)
         predicted[outputs == torch.max(outputs)] = 1
         return predicted
 
