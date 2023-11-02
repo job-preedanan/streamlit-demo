@@ -113,7 +113,8 @@ def main():
     # model_url = 'https://drive.google.com/uc?export=download&id=1o14U3yNxIBQPU5dD86IPjs8o5FffuFfw' # old 518
     # model_url_3cls = 'https://drive.google.com/uc?export=download&id=1_8gX7MKa02i7sIgjJ1pJEuGzpfouHPl-'
     model_url_3cls = 'https://drive.google.com/uc?export=download&id=1XQTyOh-wZ98Sb1XtyUVwenXwvlM-LQOo'
-    model_url_4cls = 'https://drive.google.com/uc?export=download&id=16fLZFDg7_lrMdYV57GuzL78IWoAHpVKl'   # 336 multi-label
+    # model_url_4cls = 'https://drive.google.com/uc?export=download&id=16fLZFDg7_lrMdYV57GuzL78IWoAHpVKl'   # 336 multi-label
+    model_url_4cls = 'https://drive.google.com/uc?export=download&id=1PbAE97wdXWnNSYmEJ_hiNk3j84ybOoud'
     model_path_3cls = 'DINOb(f)_3cls_336_4_best.pt'
     model_path_4cls = 'DINOb(f)_4cls_336_1_best.pt'
     if num_classes == 3:
