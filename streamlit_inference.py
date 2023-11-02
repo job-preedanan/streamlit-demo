@@ -56,6 +56,20 @@ def plot_probabilities(probabilities, num_classes):
     return fig
 
 
+def post_process(outputs, th):
+    if (outputs > 0.5).sum() == 0:
+        predicted = torch.zeros_like(a)
+        predicted[outputs == torch.max(outputs)] = 1
+        return predicted
+
+    else:
+        predicted = (outputs.data > th).float()
+        # print(predicted)
+        if predicted[0] > 0.5 and (predicted[1] > 0.5 or predicted[2] > 0.5):
+            predicted[0] = 0
+
+        return predicted
+
 @st.cache_data
 def load_image(image):
     return Image.open(image)
@@ -82,7 +96,11 @@ def classify_image(image, model, image_size, num_classes=4):
     if num_classes == 4:
         # Get the predicted class probabilities
         probabilities = torch.sigmoid(output[0])
-        predicted_class = (probabilities.data > 0.5).float()      # multi outputs
+        # predicted_class = (probabilities.data > 0.5).float()      # multi outputs
+        predicted = torch.zeros_like(outputs)
+        for i in range(len(outputs)):
+            predicted[i] = post_process(outputs[i], 0.5)            # post processing
+
     elif num_classes == 3:
         # Get the predicted class probabilities
         probabilities = torch.nn.functional.softmax(output[0], dim=0)
