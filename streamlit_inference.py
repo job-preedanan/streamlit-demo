@@ -56,17 +56,45 @@ def plot_probabilities(probabilities, num_classes):
     return fig
 
 
-def post_process(outputs, th):
-    if (outputs > 0.5).sum() == 0:
+# def post_process(outputs, th):
+#     if (outputs > 0.5).sum() == 0:
+#         predicted = torch.zeros_like(outputs)
+#         predicted[outputs == torch.max(outputs)] = 1
+#         return predicted
+#
+#     else:
+#         predicted = (outputs.data > th).float()
+#         # print(predicted)
+#         if predicted[0] > 0.5 and (predicted[1] > 0.5 or predicted[2] > 0.5):
+#             predicted[0] = 0
+#
+#         return predicted
+
+
+def post_process(outputs, th_normal=0.3, th_disease=0.3):
+    # this function processes the sigmoid output from model to predict the final result
+
+    # If there is no class that prob > 0.5  --> return class with maximum prob
+    if (outputs > th_disease).sum() == 0:
         predicted = torch.zeros_like(outputs)
         predicted[outputs == torch.max(outputs)] = 1
         return predicted
 
     else:
-        predicted = (outputs.data > th).float()
-        # print(predicted)
-        if predicted[0] > 0.5 and (predicted[1] > 0.5 or predicted[2] > 0.5):
+        # apply thresholds
+        predicted = torch.zeros_like(outputs)
+        predicted[0] = 1 if outputs[0] > th_normal else 0
+        predicted[1] = 1 if outputs[1] > th_disease else 0
+        predicted[2] = 1 if outputs[2] > th_disease else 0
+        predicted[3] = 1 if outputs[3] > th_normal else 0
+
+        # case that Normal appears together with APP or EP --> remove Normal prediction, showing only diseases
+        if predicted[0] == 1 and (predicted[1] == 1 or predicted[2] == 1):
             predicted[0] = 0
+
+        # case that Irrelevant appears together with other classes --> remove Irrelevant prediction, showing only diseases
+        if predicted[3] == 1 and (predicted[1] == 1 or predicted[2] == 1):
+            predicted[3] = 0
 
         return predicted
 
@@ -97,7 +125,7 @@ def classify_image(image, model, image_size, num_classes=4):
         # Get the predicted class probabilities
         probabilities = torch.sigmoid(output[0])
         # predicted_class = (probabilities.data > 0.5).float()      # multi outputs
-        predicted_class = post_process(probabilities, 0.5)            # post processing
+        predicted_class = post_process(probabilities, 0.3, 0.3)            # post processing
 
     elif num_classes == 3:
         # Get the predicted class probabilities
@@ -130,9 +158,10 @@ def main():
     # model_url_3cls = 'https://drive.google.com/uc?export=download&id=1_8gX7MKa02i7sIgjJ1pJEuGzpfouHPl-'
     model_url_3cls = 'https://drive.google.com/uc?export=download&id=1XQTyOh-wZ98Sb1XtyUVwenXwvlM-LQOo'
     # model_url_4cls = 'https://drive.google.com/uc?export=download&id=16fLZFDg7_lrMdYV57GuzL78IWoAHpVKl'   # 336 multi-label
-    model_url_4cls = 'https://drive.google.com/uc?export=download&id=1PbAE97wdXWnNSYmEJ_hiNk3j84ybOoud'
+    # model_url_4cls = 'https://drive.google.com/uc?export=download&id=1PbAE97wdXWnNSYmEJ_hiNk3j84ybOoud'
+    model_url_4cls = 'https://drive.google.com/uc?export=download&id=1A95ZG6OxhEVJibQiNm2_-BCC3L-SZJJq'
     model_path_3cls = 'DINOb(f)_3cls_336_4_best.pt'
-    model_path_4cls = 'DINOb(f)_4cls_336_1_best.pt'
+    model_path_4cls = 'DINOb_4cls_336_best.pt'
     if num_classes == 3:
         download_weights(model_url_3cls, model_path_3cls)
     elif num_classes==4:
